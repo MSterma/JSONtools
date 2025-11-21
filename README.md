@@ -55,7 +55,7 @@
 | Aplikacja posiada dokumentacje kodu | | 1 |
 | | Dodanie generowania dokumentacji JavaDoc dla najważniejszych klas | 1 |
 | Do prowadzenia projektu wykorzystywane jest narzędzie zarządzania | | 2 |
-| | Utworzenie tablicy Trello | 1 |
-| | Pilnowanie żeby tablica była zgodna ze stanem rzeczywistym | 1 |
+| | Utworzenie zadań w sekcji Git Hub issues| 1 |
+| | Pilnowanie żeby lista zadań i ich stan były zgodne ze stanem rzeczywistym | 1 |
 | Wykorzystanie narzędzia s4j do logowania i debugowania | | 1 |
 | | konfiguracja biblioteki s4j | 1 |
