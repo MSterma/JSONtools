@@ -2,10 +2,7 @@
 
 name: Java CI to create and upload release on pull request
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+   [push]
 
 env:
   build-number: ${GITHUB_RUN_NUMBER}
