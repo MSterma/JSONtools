@@ -54,7 +54,7 @@
 | | Zaprojektowanie diagramu UML | 1 |
 | Aplikacja posiada dokumentacje kodu | | 1 |
 | | Dodanie generowania dokumentacji JavaDoc dla najważniejszych klas | 1 |
-| Do prowadzenia projektu wykorzystywane jest narzędzie zarządzania (wojciech.complak@cs.put.poznan.pl) | | 2 |
+| Do prowadzenia projektu wykorzystywane jest narzędzie zarządzania | | 2 |
 | | Utworzenie tablicy Trello | 1 |
 | | Pilnowanie żeby tablica była zgodna ze stanem rzeczywistym | 1 |
 | Wykorzystanie narzędzia s4j do logowania i debugowania | | 1 |
