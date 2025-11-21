@@ -1,2 +1,2 @@
 # JSONtools
-![example workflow](https://github.com/msterma/JSONtools/actions/workflows/ci.yml/badge.svg
+![example workflow](https://github.com/MSterma/JSONtools/actions/workflows/ci.yml/badge.svg)
