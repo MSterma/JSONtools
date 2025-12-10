@@ -15,7 +15,7 @@ import java.util.List;
 public class JSONtoolsApplication {
 
     public static void main(String[] args) throws IOException {
-        String filePathString ="test.json";
+        String filePathString ="deminified.json";
         Path path = Paths.get(filePathString);
         String content;
         try {
@@ -24,11 +24,11 @@ public class JSONtoolsApplication {
             System.err.println("Błąd podczas odczytu pliku: " + e.getMessage());
             return;
         }
-        List<String> fieldsToKeep = Arrays.asList("volume", "height", "name","children","id");
+        List<String> fieldsToKeep = Arrays.asList("volume","height");
         JsonProcessorComponent component = new BaseJsonComponent(content);
-        component=new TextLineDiffDecorator(component);
+        component=new FilterColumnsDecorator(component,fieldsToKeep,true);
         String minifiedContent = component.getProcessedJson();
-        Path outputPath  =Paths.get("diff.json");
+        Path outputPath  =Paths.get("filter.json");
         Files.writeString(outputPath,minifiedContent);
         SpringApplication.run(JSONtoolsApplication.class, args);
     }
