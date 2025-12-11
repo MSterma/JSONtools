@@ -14,22 +14,7 @@ import java.util.List;
 @SpringBootApplication(scanBasePackages = {"pl.put.poznan.transformer.rest"})
 public class JSONtoolsApplication {
 
-    public static void main(String[] args) throws IOException {
-        String filePathString ="deminified.json";
-        Path path = Paths.get(filePathString);
-        String content;
-        try {
-            content = Files.readString(path);
-        } catch (IOException e) {
-            System.err.println("Błąd podczas odczytu pliku: " + e.getMessage());
-            return;
-        }
-        List<String> fieldsToKeep = Arrays.asList("volume","height");
-        JsonProcessorComponent component = new BaseJsonComponent(content);
-        component=new FilterColumnsDecorator(component,fieldsToKeep,true);
-        String minifiedContent = component.getProcessedJson();
-        Path outputPath  =Paths.get("filter.json");
-        Files.writeString(outputPath,minifiedContent);
+    public static void main(String[] args) {
         SpringApplication.run(JSONtoolsApplication.class, args);
     }
 }

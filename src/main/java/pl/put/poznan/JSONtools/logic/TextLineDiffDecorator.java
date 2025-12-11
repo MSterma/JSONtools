@@ -11,11 +11,15 @@ import java.util.List;
 public class TextLineDiffDecorator extends JsonDecorator {
 
     private final ObjectMapper mapper = new ObjectMapper();
-
+    /**
+     * Initialize using constructor from superclass
+     */
     public TextLineDiffDecorator(JsonProcessorComponent decoratedComponent) {
         super(decoratedComponent);
     }
-
+    /**
+     * @return Json structure with information whether files are identical or different, number of differences, and list of differences formatted as {line: line_number, fileA: line_in_fileA,  fileA: line_in_fileB}
+     */
     @Override
     public JsonNode getJsonNode() throws JsonProcessingException {
         JsonNode inputNode = decoratedComponent.getJsonNode();
@@ -66,7 +70,9 @@ public class TextLineDiffDecorator extends JsonDecorator {
 
         return resultNode;
     }
-
+    /**
+     * @return formatted Json with differences in 2 files
+     */
     @Override
     public String getProcessedJson() throws JsonProcessingException {
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(getJsonNode());

@@ -5,31 +5,36 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.List;
 import java.util.ArrayList;
-/**
- * Concrete Decorator: Filtruje pola w JSON.
- */
-
-
 import com.fasterxml.jackson.databind.node.ArrayNode;
-
+/**
+ * This class is used to filter fields from given Json. Variable excludeMode specifies whether given fields
+ *  should be included or excluded from output structure (Concrete Decorator).
+ */
 public class FilterColumnsDecorator extends JsonDecorator {
 
-    private final List<String> fieldsToKeep;
+    private final List<String> targetFields;
     private final ObjectMapper mapper = new ObjectMapper();
     private  final boolean excludeMode;
-
-    public FilterColumnsDecorator(JsonProcessorComponent decoratedComponent, List<String> fieldsToKeep) {
+    /**
+     * This constructor initializes decoratedComponent, list of fields to keep in output Json, default value of mode flag.
+     */
+    public FilterColumnsDecorator(JsonProcessorComponent decoratedComponent, List<String> targetFields) {
         super(decoratedComponent);
-        this.fieldsToKeep = fieldsToKeep;
+        this.targetFields = targetFields;
         this.excludeMode=false;
     }
-    public FilterColumnsDecorator(JsonProcessorComponent decoratedComponent, List<String> fieldsToKeep, boolean excludeMode) {
+    /**
+     * This constructor initializes decoratedComponent, list of targetFields from output Json, and excludeMode flag.
+     * Depending on flag value targetFields are treated as fields to keep (false) or fields to exclude (true).
+     */
+    public FilterColumnsDecorator(JsonProcessorComponent decoratedComponent, List<String> targetFields, boolean excludeMode) {
         super(decoratedComponent);
-        this.fieldsToKeep = fieldsToKeep;
+        this.targetFields = targetFields;
         this.excludeMode=excludeMode;
     }
-
-
+    /**
+     * @return Json structure for decorators' purposes
+     */
     @Override
     public JsonNode getJsonNode() throws JsonProcessingException {
         JsonNode originalNode = decoratedComponent.getJsonNode();
@@ -56,7 +61,7 @@ public class FilterColumnsDecorator extends JsonDecorator {
             objectNode.fieldNames().forEachRemaining(fieldNames::add);
 
             for (String fieldName : fieldNames) {
-                if (fieldsToKeep.contains(fieldName)) {
+                if (targetFields.contains(fieldName)) {
                     filter(objectNode.get(fieldName));
                 } else {
                     objectNode.remove(fieldName);
@@ -78,7 +83,7 @@ public class FilterColumnsDecorator extends JsonDecorator {
             List<String> fieldNames = new ArrayList<>();
             objectNode.fieldNames().forEachRemaining(fieldNames::add);
             for (String fieldName : fieldNames) {
-                if (fieldsToKeep.contains(fieldName)) {
+                if (targetFields.contains(fieldName)) {
                     objectNode.remove(fieldName);
                 } else {
                     filterExclude(objectNode.get(fieldName));
@@ -93,7 +98,7 @@ public class FilterColumnsDecorator extends JsonDecorator {
     }
 
     /**
-     * @return Json structure  with specified or without specified fields depending on mode flag
+     * @return Json structure  with or without specified fields depending on mode flag
      */
     @Override
     public String getProcessedJson() throws JsonProcessingException {

@@ -9,7 +9,7 @@ public class MinifyDecorator extends JsonDecorator {
 
     private final ObjectMapper mapper = new ObjectMapper();
     /**
-     * Construct using constructor from superclass
+     * Initialize using constructor from superclass
      */
     public MinifyDecorator(JsonProcessorComponent decoratedComponent) {
         super(decoratedComponent);
