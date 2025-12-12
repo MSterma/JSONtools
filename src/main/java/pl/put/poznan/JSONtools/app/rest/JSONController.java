@@ -1,4 +1,4 @@
-package pl.put.poznan.JSONtools.app.controller;
+package pl.put.poznan.JSONtools.app.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.ResponseEntity;
@@ -58,21 +58,44 @@ public class JSONController {
 
 
     /**
-     * Filters the JSON, keeping only the specified fields (columns).
+     * Filters the JSON using a whitelist — only the given fields remain.
      *
      * @param inputJson The string containing the JSON to be filtered.
-     * @param fields A list of field names (keys) to be kept in the result.
-     * @return HTTP 200 response with the filtered JSON or 400 in case of an invalid format.
+     * @param fields A list of field names (keys) to keep in the result.
+     * @return HTTP 200 with the filtered JSON or 400 if input is invalid.
      */
-    @PostMapping("/filter")
-    public ResponseEntity<String> filterJson(
+    @PostMapping("/filter/whitelist")
+    public ResponseEntity<String> filterWhitelist(
             @RequestBody String inputJson,
             @RequestParam List<String> fields
     ) {
         try {
             JsonProcessorComponent base = new BaseJsonComponent(inputJson);
+            JsonProcessorComponent filtered = new FilterColumnsDecorator(base, fields, false);
 
-            JsonProcessorComponent filtered = new FilterColumnsDecorator(base, fields);
+            return ResponseEntity.ok(filtered.getProcessedJson());
+
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.badRequest().body("Invalid JSON format!");
+        }
+    }
+
+
+    /**
+     * Filters the JSON using a blacklist — all given fields are removed.
+     *
+     * @param inputJson The JSON content to process.
+     * @param fields A list of field names (keys) to remove from the result.
+     * @return HTTP 200 with the filtered JSON or 400 in case of invalid input.
+     */
+    @PostMapping("/filter/blacklist")
+    public ResponseEntity<String> filterBlacklist(
+            @RequestBody String inputJson,
+            @RequestParam List<String> fields
+    ) {
+        try {
+            JsonProcessorComponent base = new BaseJsonComponent(inputJson);
+            JsonProcessorComponent filtered = new FilterColumnsDecorator(base, fields, true);
 
             return ResponseEntity.ok(filtered.getProcessedJson());
 
