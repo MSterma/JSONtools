@@ -7,16 +7,24 @@ import java.util.List;
 import java.util.ArrayList;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 /**
- * This class is used to filter fields from given Json. Variable excludeMode specifies whether given fields
- *  should be included or excluded from output structure (Concrete Decorator).
+ * This class is used to filter fields from given Json (Concrete decorator).
  */
 public class FilterColumnsDecorator extends JsonDecorator {
-
+    /**
+     * Fields that should remain in output Json structure
+     */
     private final List<String> targetFields;
+    /**
+     * Jackson object used to convert serialized Json to string containing formatted Json
+     */
     private final ObjectMapper mapper = new ObjectMapper();
+    /**
+     * Depending on this variable's value targetFields are treated as fields to keep (false) or fields to exclude (true)
+     */
     private  final boolean excludeMode;
     /**
      * This constructor initializes decoratedComponent, list of fields to keep in output Json, default value of mode flag.
+     *  @param decoratedComponent Object that implements JsonProcessorComponent such as BaseJsonComponent or any concrete decorator object
      */
     public FilterColumnsDecorator(JsonProcessorComponent decoratedComponent, List<String> targetFields) {
         super(decoratedComponent);
@@ -25,7 +33,9 @@ public class FilterColumnsDecorator extends JsonDecorator {
     }
     /**
      * This constructor initializes decoratedComponent, list of targetFields from output Json, and excludeMode flag.
-     * Depending on flag value targetFields are treated as fields to keep (false) or fields to exclude (true).
+     *   @param decoratedComponent Object that implements JsonProcessorComponent such as BaseJsonComponent or any concrete decorator object
+      *  @param targetFields Fields that should remain in output Json structure
+     * @param excludeMode Depending on this variable's value targetFields are treated as fields to keep (false) or fields to exclude (true)
      */
     public FilterColumnsDecorator(JsonProcessorComponent decoratedComponent, List<String> targetFields, boolean excludeMode) {
         super(decoratedComponent);
@@ -33,7 +43,9 @@ public class FilterColumnsDecorator extends JsonDecorator {
         this.excludeMode=excludeMode;
     }
     /**
+     * Invokes correct filtration method and returns filtered serialized Json structure
      * @return Json structure for decorators' purposes
+     * @throws JsonProcessingException if input Json structure is invalid
      */
     @Override
     public JsonNode getJsonNode() throws JsonProcessingException {
@@ -52,6 +64,7 @@ public class FilterColumnsDecorator extends JsonDecorator {
 
     /**
      * Recursive method searches through Json represented as tree  in order to include specified fields
+     * @param node rootNode of type JsonNode which contains Json structure serialized into object via Jackson
      */
     private void filter(JsonNode node) {
         if (node.isObject()) {
@@ -76,6 +89,7 @@ public class FilterColumnsDecorator extends JsonDecorator {
     }
     /**
      * Recursive method searches through Json represented as tree  in order to exclude specified fields
+     * @param node rootNode of type JsonNode which contains Json structure serialized into object via Jackson
      */
     private void filterExclude(JsonNode node) {
         if (node.isObject()) {
@@ -98,7 +112,9 @@ public class FilterColumnsDecorator extends JsonDecorator {
     }
 
     /**
+     * Transforms serialized Json into string
      * @return Json structure  with or without specified fields depending on mode flag
+     * @throws JsonProcessingException if input Json structure is invalid
      */
     @Override
     public String getProcessedJson() throws JsonProcessingException {

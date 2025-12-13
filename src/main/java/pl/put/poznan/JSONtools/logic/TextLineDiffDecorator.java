@@ -8,17 +8,26 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This class compares 2 files and returns details about differences (Concrete Decorator)
+ */
 public class TextLineDiffDecorator extends JsonDecorator {
-
+    /**
+     * Jackson object used to create output Json structure
+     */
     private final ObjectMapper mapper = new ObjectMapper();
     /**
      * Initialize using constructor from superclass
+     *  @param decoratedComponent Object that implements JsonProcessorComponent such as BaseJsonComponent or any concrete decorator object
      */
     public TextLineDiffDecorator(JsonProcessorComponent decoratedComponent) {
         super(decoratedComponent);
     }
     /**
+     * Compares two files and builds output with details about differences
      * @return Json structure with information whether files are identical or different, number of differences, and list of differences formatted as {line: line_number, fileA: line_in_fileA,  fileA: line_in_fileB}
+     * @throws JsonProcessingException if input Json structure is invalid
+     * @throws IllegalArgumentException if input file doesn't contain  fields "fileA","fileB".
      */
     @Override
     public JsonNode getJsonNode() throws JsonProcessingException {
@@ -71,7 +80,9 @@ public class TextLineDiffDecorator extends JsonDecorator {
         return resultNode;
     }
     /**
+     *  Transforms serialized Json  into String that contains formatted Json structure
      * @return formatted Json with differences in 2 files
+     * @throws JsonProcessingException if input Json structure is invalid
      */
     @Override
     public String getProcessedJson() throws JsonProcessingException {
