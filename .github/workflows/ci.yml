@@ -32,6 +32,17 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
+    - name: Generate JavaDoc
+      if: startsWith(github.ref, 'refs/tags/')
+      run: mvn javadoc:javadoc
+
+    - name: Package JavaDoc
+      if: startsWith(github.ref, 'refs/tags/')
+      run: |
+        cd target/site
+        zip -r ../../javadoc.zip apidocs/
+        cd ../..
+
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
