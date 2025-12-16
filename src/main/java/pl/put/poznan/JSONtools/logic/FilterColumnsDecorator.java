@@ -6,10 +6,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.List;
 import java.util.ArrayList;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class is used to filter fields from given Json (Concrete decorator).
  */
 public class FilterColumnsDecorator extends JsonDecorator {
+    private static final Logger logger = LoggerFactory.getLogger(FilterColumnsDecorator.class);
     /**
      * Fields that should remain in output Json structure
      */
@@ -53,12 +57,14 @@ public class FilterColumnsDecorator extends JsonDecorator {
 
         JsonNode copiedNode = originalNode.deepCopy();
     if(excludeMode){
+        logger.info("FilterColumnsDecorator: Starting filtration in exclude mode(blacklist)");
         filterExclude(copiedNode);
     }else{
+        logger.info("FilterColumnsDecorator: Starting filtration in include mode(whitelist)");
         filter(copiedNode);
     }
 
-
+        logger.debug("FilterColumnsDecorator: Filtration completed");
         return copiedNode;
     }
 
@@ -118,6 +124,7 @@ public class FilterColumnsDecorator extends JsonDecorator {
      */
     @Override
     public String getProcessedJson() throws JsonProcessingException {
+        logger.debug("FilterColumnsDecorator: Converting filtered node to string");
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(getJsonNode());
     }
 }

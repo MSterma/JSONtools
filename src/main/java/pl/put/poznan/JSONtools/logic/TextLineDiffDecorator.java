@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.List;
  * This class compares 2 files and returns details about differences (Concrete Decorator)
  */
 public class TextLineDiffDecorator extends JsonDecorator {
+    private static final Logger logger = LoggerFactory.getLogger(TextLineDiffDecorator.class);
     /**
      * Jackson object used to create output Json structure
      */
@@ -34,6 +37,7 @@ public class TextLineDiffDecorator extends JsonDecorator {
         JsonNode inputNode = decoratedComponent.getJsonNode();
 
         if (!inputNode.has("fileA") || !inputNode.has("fileB")) {
+            logger.debug("TextLineDiffDecorator: Missing required fields 'fileA' or 'fileB' for comparison");
             throw new IllegalArgumentException("JSON wejściowy do porównania musi zawierać pola 'fileA' i 'fileB'.");
         }
 
@@ -76,7 +80,7 @@ public class TextLineDiffDecorator extends JsonDecorator {
         resultNode.put("status", diffCount == 0 ? "identical" : "different");
         resultNode.put("total_differences", diffCount);
         resultNode.set("details", diffsNode);
-
+        logger.debug("TextLineDiffDecorator: Finished. Differences found: {}", diffCount);
         return resultNode;
     }
     /**

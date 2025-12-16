@@ -5,7 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.put.poznan.JSONtools.logic.*;
 import java.util.List;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * REST Controller handling JSON transformation, formatting, filtering,
@@ -16,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/json")
 public class JSONController {
-
+    private static final Logger logger = LoggerFactory.getLogger(JSONController.class);
     /**
      * Minifies (removes whitespace from) the provided JSON string.
      *
@@ -25,13 +26,16 @@ public class JSONController {
      */
     @PostMapping("/minify")
     public ResponseEntity<String> minifyJson(@RequestBody String inputJson) {
+        logger.info("Received POST request to minify Json Structure");
         try {
             JsonProcessorComponent base = new BaseJsonComponent(inputJson);
             JsonProcessorComponent minified = new MinifyDecorator(base);
-
-            return ResponseEntity.ok(minified.getProcessedJson());
+            String output=minified.getProcessedJson();
+            logger.debug("Json structure minified");
+            return ResponseEntity.ok(output);
 
         } catch (JsonProcessingException e) {
+            logger.debug("Invalid JSON file format: {}",inputJson);
             return ResponseEntity.badRequest().body("Invalid JSON format!");
         }
     }
@@ -46,12 +50,15 @@ public class JSONController {
      */
     @PostMapping("/pretty")
     public ResponseEntity<String> prettyJson(@RequestBody String inputJson){
+        logger.info("Received POST request to pretty print Json Structure");
         try {
             JsonProcessorComponent base = new BaseJsonComponent(inputJson);
-
-            return ResponseEntity.ok(base.getProcessedJson());
+            String output =base.getProcessedJson();
+            logger.debug("Json structure formatted");
+            return ResponseEntity.ok(output);
 
         } catch (JsonProcessingException e) {
+            logger.debug("Invalid JSON file format: {}",inputJson);
             return ResponseEntity.badRequest().body("Invalid JSON format!");
         }
     }
@@ -69,13 +76,16 @@ public class JSONController {
             @RequestBody String inputJson,
             @RequestParam List<String> fields
     ) {
+        logger.info("Received POST request to filter (whitelist) Json Structure");
         try {
             JsonProcessorComponent base = new BaseJsonComponent(inputJson);
             JsonProcessorComponent filtered = new FilterColumnsDecorator(base, fields, false);
-
-            return ResponseEntity.ok(filtered.getProcessedJson());
+            String output =filtered.getProcessedJson();
+            logger.debug("Json structure filtered (whitelist)");
+            return ResponseEntity.ok(output);
 
         } catch (JsonProcessingException e) {
+            logger.debug("Invalid JSON file format: {}",inputJson);
             return ResponseEntity.badRequest().body("Invalid JSON format!");
         }
     }
@@ -93,13 +103,16 @@ public class JSONController {
             @RequestBody String inputJson,
             @RequestParam List<String> fields
     ) {
+        logger.info("Received POST request to filter (blacklist) Json Structure");
         try {
             JsonProcessorComponent base = new BaseJsonComponent(inputJson);
             JsonProcessorComponent filtered = new FilterColumnsDecorator(base, fields, true);
-
-            return ResponseEntity.ok(filtered.getProcessedJson());
+            String output =filtered.getProcessedJson();
+            logger.debug("Json structure filtered (blacklist)");
+            return ResponseEntity.ok(output);
 
         } catch (JsonProcessingException e) {
+            logger.debug("Invalid JSON file format: {}",inputJson);
             return ResponseEntity.badRequest().body("Invalid JSON format!");
         }
     }
@@ -114,15 +127,19 @@ public class JSONController {
      */
     @PostMapping("/diff")
     public ResponseEntity<String> diffJson(@RequestBody String inputJson) {
+        logger.info("Received POST request to compare files");
         try {
             JsonProcessorComponent base = new BaseJsonComponent(inputJson);
             JsonProcessorComponent diff = new TextLineDiffDecorator(base);
-
-            return ResponseEntity.ok(diff.getProcessedJson());
+            String output = diff.getProcessedJson();
+            logger.debug("Text comparison completed");
+            return ResponseEntity.ok(output);
 
         } catch (IllegalArgumentException e) {
+            logger.debug("Invalid arguments for comparison: {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (JsonProcessingException e) {
+            logger.debug("Invalid JSON file format: {}",inputJson);
             return ResponseEntity.badRequest().body("Invalid JSON format!");
         }
     }

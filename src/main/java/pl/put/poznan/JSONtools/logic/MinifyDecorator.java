@@ -1,11 +1,14 @@
 package pl.put.poznan.JSONtools.logic;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is used to minify given Json and return it as String (Concrete decorator)
  */
 public class MinifyDecorator extends JsonDecorator {
+    private static final Logger logger = LoggerFactory.getLogger(MinifyDecorator.class);
     /**
      * Jackson object used to convert serialized Json to string containing Json without white spaces
      */
@@ -23,6 +26,7 @@ public class MinifyDecorator extends JsonDecorator {
      */
     @Override
     public String getProcessedJson() throws JsonProcessingException {
+        logger.info("MinifyDecorator: Starting JSON minification");
         return mapper.writeValueAsString(decoratedComponent.getJsonNode());
     }
 }
