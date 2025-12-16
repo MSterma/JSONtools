@@ -29,6 +29,7 @@ public class FilterColumnsDecorator extends JsonDecorator {
     /**
      * This constructor initializes decoratedComponent, list of fields to keep in output Json, default value of mode flag.
      *  @param decoratedComponent Object that implements JsonProcessorComponent such as BaseJsonComponent or any concrete decorator object
+     *  @param targetFields Fields that should remain in output Json structure
      */
     public FilterColumnsDecorator(JsonProcessorComponent decoratedComponent, List<String> targetFields) {
         super(decoratedComponent);
