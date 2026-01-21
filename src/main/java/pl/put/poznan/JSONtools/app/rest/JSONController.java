@@ -1,6 +1,7 @@
 package pl.put.poznan.JSONtools.app.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.put.poznan.JSONtools.logic.*;
@@ -24,8 +25,9 @@ public class JSONController {
      * @param inputJson The string containing the JSON to be minified.
      * @return HTTP 200 response with the minified JSON or 400 in case of an invalid format.
      */
+
     @PostMapping("/minify")
-    public ResponseEntity<String> minifyJson(@RequestBody String inputJson) {
+    @Operation(summary = "JSON Minification", description = "Removes all whitespaces, new lines, and tabs, returning a compact string.")    public ResponseEntity<String> minifyJson(@RequestBody String inputJson) {
         logger.info("Received POST request to minify Json Structure");
         try {
             JsonProcessorComponent base = new BaseJsonComponent(inputJson);
@@ -49,7 +51,7 @@ public class JSONController {
      * @return HTTP 200 response with the formatted JSON or 400 in case of an invalid format.
      */
     @PostMapping("/pretty")
-    public ResponseEntity<String> prettyJson(@RequestBody String inputJson){
+    @Operation(summary = "JSON Formatting (Pretty Print)", description = "Transforms raw JSON into a readable, formatted structure with indentations.")    public ResponseEntity<String> prettyJson(@RequestBody String inputJson){
         logger.info("Received POST request to pretty print Json Structure");
         try {
             JsonProcessorComponent base = new BaseJsonComponent(inputJson);
@@ -72,7 +74,7 @@ public class JSONController {
      * @return HTTP 200 with the filtered JSON or 400 if input is invalid.
      */
     @PostMapping("/filter/whitelist")
-    public ResponseEntity<String> filterWhitelist(
+    @Operation(summary = "Filtering (Whitelist)", description = "Keeps ONLY the fields specified in the 'fields' parameter. All other fields are removed from the JSON.")    public ResponseEntity<String> filterWhitelist(
             @RequestBody String inputJson,
             @RequestParam List<String> fields
     ) {
@@ -99,7 +101,7 @@ public class JSONController {
      * @return HTTP 200 with the filtered JSON or 400 in case of invalid input.
      */
     @PostMapping("/filter/blacklist")
-    public ResponseEntity<String> filterBlacklist(
+    @Operation(summary = "Filtering (Blacklist)", description = "Removes all fields specified in the 'fields' parameter. The rest of the JSON remains unchanged.")    public ResponseEntity<String> filterBlacklist(
             @RequestBody String inputJson,
             @RequestParam List<String> fields
     ) {
@@ -126,7 +128,7 @@ public class JSONController {
      * @return HTTP 200 with the diff result, or 400 if input is invalid.
      */
     @PostMapping("/diff")
-    public ResponseEntity<String> diffJson(@RequestBody String inputJson) {
+    @Operation(summary = "File Comparison (Diff)", description = "Compares two texts and returns differences line by line. NOTE: Requires input JSON with 'fileA' and 'fileB' fields.")    public ResponseEntity<String> diffJson(@RequestBody String inputJson) {
         logger.info("Received POST request to compare files");
         try {
             JsonProcessorComponent base = new BaseJsonComponent(inputJson);
